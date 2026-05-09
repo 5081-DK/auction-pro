@@ -1,89 +1,184 @@
-const router = require("express").Router();
+const express =
+require("express");
 
-const bcrypt = require("bcryptjs");
+const router =
+express.Router();
 
-const User = require("../models/User");
+const mongoose =
+require("mongoose");
+
+/* USER SCHEMA */
+
+const userSchema =
+new mongoose.Schema({
+
+  username:String,
+
+  password:String
+
+});
+
+/* USER MODEL */
+
+const User =
+mongoose.models.User ||
+
+mongoose.model(
+  "User",
+  userSchema
+);
 
 /* SIGNUP */
 
-router.post("/signup", async (req,res)=>{
+router.post(
+  "/signup",
 
-  try{
+  async(req,res)=>{
 
-    const hash =
-    await bcrypt.hash(
-      req.body.password,
-      10
-    );
+    try{
 
-    const user = new User({
+      const {
 
-      username:req.body.username,
+        username,
 
-      password:hash
+        password
 
-    });
+      } = req.body;
 
-    await user.save();
+      /* CHECK EXISTING */
 
-    res.json({
-      success:true
-    });
+      const existingUser =
+      await User.findOne({
+        username
+      });
 
-  }catch(err){
+      if(existingUser){
 
-    res.json({
-      success:false
-    });
+        return res.json({
+
+          success:false,
+
+          message:
+          "User already exists"
+
+        });
+
+      }
+
+      /* CREATE USER */
+
+      const newUser =
+      new User({
+
+        username,
+
+        password
+
+      });
+
+      await newUser.save();
+
+      res.json({
+
+        success:true,
+
+        message:
+        "Signup Successful"
+
+      });
+
+    }
+
+    catch(err){
+
+      console.log(err);
+
+      res.json({
+
+        success:false,
+
+        message:
+        "Signup Failed"
+
+      });
+
+    }
 
   }
 
-});
+);
 
 /* LOGIN */
 
-router.post("/login", async (req,res)=>{
+router.post(
+  "/login",
 
-  const user =
-  await User.findOne({
+  async(req,res)=>{
 
-    username:req.body.username
+    try{
 
-  });
+      const {
 
-  if(!user){
+        username,
 
-    return res.json({
-      success:false
-    });
+        password
+
+      } = req.body;
+
+      const user =
+      await User.findOne({
+
+        username,
+
+        password
+
+      });
+
+      if(user){
+
+        res.json({
+
+          success:true,
+
+          user
+
+        });
+
+      }
+
+      else{
+
+        res.json({
+
+          success:false,
+
+          message:
+          "Invalid Credentials"
+
+        });
+
+      }
+
+    }
+
+    catch(err){
+
+      console.log(err);
+
+      res.json({
+
+        success:false,
+
+        message:
+        "Login Failed"
+
+      });
+
+    }
 
   }
 
-  const valid =
-  await bcrypt.compare(
+);
 
-    req.body.password,
-
-    user.password
-
-  );
-
-  if(!valid){
-
-    return res.json({
-      success:false
-    });
-
-  }
-
-  res.json({
-
-    success:true,
-
-    user
-
-  });
-
-});
-
-module.exports = router;
+module.exports =
+router;
