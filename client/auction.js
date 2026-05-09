@@ -1,7 +1,12 @@
+/* API */
+
+const API =
+"https://auction-pro-api.onrender.com";
+
 /* SOCKET CONNECTION */
 
 const socket =
-io("http://192.168.137.1:5000");
+io(API);
 
 /* TOURNAMENT ID */
 
@@ -53,9 +58,10 @@ async function fetchPlayers(){
 
   try{
 
-    const res = await fetch(
+    const res =
+    await fetch(
 
-      `http://192.168.137.1:5000/getPlayers/${tournamentId}`
+      `${API}/getPlayers/${tournamentId}`
 
     );
 
@@ -74,9 +80,15 @@ async function fetchPlayers(){
 
     loadPlayer();
 
-  }catch(err){
+  }
+
+  catch(err){
 
     console.log(err);
+
+    alert(
+      "Server Error"
+    );
 
   }
 
@@ -89,13 +101,25 @@ function loadPlayer(){
   const player =
   players[currentPlayerIndex];
 
+  if(!player){
+
+    alert(
+      "Auction Finished"
+    );
+
+    return;
+
+  }
+
   document.getElementById(
     "playerName"
-  ).innerText = player.name;
+  ).innerText =
+  player.name;
 
   document.getElementById(
     "playerImage"
-  ).src = player.photo;
+  ).src =
+  player.photo;
 
   document.getElementById(
     "playerStats"
@@ -136,34 +160,50 @@ function loadPlayer(){
 
   /* TV DISPLAY */
 
-  document.getElementById(
-    "tvPlayerImage"
-  ).src = player.photo;
+  if(
+    document.getElementById(
+      "tvPlayerImage"
+    )
+  ){
 
-  document.getElementById(
-    "tvPlayerName"
-  ).innerText = player.name;
+    document.getElementById(
+      "tvPlayerImage"
+    ).src =
+    player.photo;
 
-  document.getElementById(
-    "tvPlayerStats"
-  ).innerText =
+  }
 
-  `Matches:
-   ${player.matches}
-   | Runs:
-   ${player.runs}
-   | Wickets:
-   ${player.wickets}`;
+  if(
+    document.getElementById(
+      "tvPlayerName"
+    )
+  ){
 
-  document.getElementById(
-    "tvCurrentBid"
-  ).innerText =
-  currentBid;
+    document.getElementById(
+      "tvPlayerName"
+    ).innerText =
+    player.name;
 
-  document.getElementById(
-    "tvHighestBidder"
-  ).innerText =
-  "No Bids Yet";
+  }
+
+  if(
+    document.getElementById(
+      "tvPlayerStats"
+    )
+  ){
+
+    document.getElementById(
+      "tvPlayerStats"
+    ).innerText =
+
+    `Matches:
+     ${player.matches}
+     | Runs:
+     ${player.runs}
+     | Wickets:
+     ${player.wickets}`;
+
+  }
 
 }
 
@@ -184,7 +224,9 @@ function enableAdmin(){
       "Admin Enabled"
     );
 
-  }else{
+  }
+
+  else{
 
     alert(
       "Wrong Password"
@@ -210,16 +252,18 @@ async function teamLogin(){
 
   try{
 
-    const res = await fetch(
+    const res =
+    await fetch(
 
-      "http://192.168.137.1:5000/teamLogin",
+      `${API}/teamLogin`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -273,7 +317,9 @@ async function teamLogin(){
         "Team Login Success"
       );
 
-    }else{
+    }
+
+    else{
 
       alert(
         "Invalid Credentials"
@@ -281,30 +327,38 @@ async function teamLogin(){
 
     }
 
-  }catch(err){
+  }
+
+  catch(err){
 
     console.log(err);
+
+    alert(
+      "Server Error"
+    );
 
   }
 
 }
 
-/* FETCH LATEST PURSE */
+/* FETCH PURSE */
 
 async function fetchLatestPurse(){
 
   try{
 
-    const res = await fetch(
+    const res =
+    await fetch(
 
-      "http://192.168.137.1:5000/getTeamPurse",
+      `${API}/getTeamPurse`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -337,7 +391,9 @@ async function fetchLatestPurse(){
 
     }
 
-  }catch(err){
+  }
+
+  catch(err){
 
     console.log(err);
 
@@ -404,7 +460,7 @@ async function placeBid(){
 
 }
 
-/* SOCKET BID UPDATE */
+/* BID UPDATE */
 
 socket.on(
   "bidUpdate",
@@ -428,19 +484,8 @@ socket.on(
     `Highest Bidder:
      ${highestBidder}`;
 
-    document.getElementById(
-      "tvCurrentBid"
-    ).innerText =
-    currentBid;
-
-    document.getElementById(
-      "tvHighestBidder"
-    ).innerText =
-
-    `Highest Bidder:
-     ${highestBidder}`;
-
-});
+  }
+);
 
 /* PLAYER CHANGED */
 
@@ -453,9 +498,10 @@ socket.on(
 
     loadPlayer();
 
-});
+  }
+);
 
-/* BID RESET */
+/* RESET BID */
 
 socket.on(
   "bidReset",
@@ -474,20 +520,8 @@ socket.on(
     ).innerText =
     "No Bids Yet";
 
-    document.getElementById(
-      "bidAmount"
-    ).value = "";
-
-    document.getElementById(
-      "tvCurrentBid"
-    ).innerText = "0";
-
-    document.getElementById(
-      "tvHighestBidder"
-    ).innerText =
-    "No Bids Yet";
-
-});
+  }
+);
 
 /* SELL PLAYER */
 
@@ -520,14 +554,15 @@ async function sellPlayer(){
 
     await fetch(
 
-      "http://192.168.137.1:5000/sellPlayer",
+      `${API}/sellPlayer`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -549,78 +584,11 @@ async function sellPlayer(){
 
     );
 
-    await fetchLatestPurse();
-
-    let soldPlayers =
-
-    JSON.parse(
-      localStorage.getItem(
-        "soldPlayers"
-      )
-    ) || [];
-
-    soldPlayers.push({
-
-      player:player.name,
-
-      team:highestBidder,
-
-      price:currentBid
-
-    });
-
-    localStorage.setItem(
-
-      "soldPlayers",
-
-      JSON.stringify(
-        soldPlayers
-      )
-
-    );
-
-    if(
-      !leaderboard[
-        highestBidder
-      ]
-    ){
-
-      leaderboard[
-        highestBidder
-      ] = {
-
-        spent:0,
-
-        players:[]
-
-      };
-
-    }
-
-    leaderboard[
-      highestBidder
-    ].spent += currentBid;
-
-    leaderboard[
-      highestBidder
-    ].players.push({
-
-      name:player.name,
-
-      price:currentBid
-
-    });
-
-    updateSoldTable();
-
-    updateLeaderboard();
-
     alert(
 
       `${player.name}
        sold to
-       ${highestBidder}
-       for ₹${currentBid}`
+       ${highestBidder}`
 
     );
 
@@ -628,7 +596,9 @@ async function sellPlayer(){
       "resetBid"
     );
 
-  }catch(err){
+  }
+
+  catch(err){
 
     console.log(err);
 
@@ -640,40 +610,15 @@ async function sellPlayer(){
 
 function nextPlayer(){
 
-  if(!isAdmin){
-
-    alert(
-      "Admin Required"
-    );
-
-    return;
-
-  }
-
   currentPlayerIndex++;
-
-  if(
-    currentPlayerIndex >=
-    players.length
-  ){
-
-    alert(
-      "Auction Finished"
-    );
-
-    return;
-
-  }
 
   socket.emit(
 
     "nextPlayer",
 
     {
-
       index:
       currentPlayerIndex
-
     }
 
   );
@@ -681,91 +626,6 @@ function nextPlayer(){
   socket.emit(
     "resetBid"
   );
-
-}
-
-/* SOLD TABLE */
-
-function updateSoldTable(){
-
-  const soldPlayers =
-
-  JSON.parse(
-    localStorage.getItem(
-      "soldPlayers"
-    )
-  ) || [];
-
-  const tbody =
-  document.getElementById(
-    "soldTableBody"
-  );
-
-  tbody.innerHTML = "";
-
-  soldPlayers.forEach(
-    player => {
-
-      tbody.innerHTML += `
-
-      <tr>
-
-        <td>${player.player}</td>
-
-        <td>${player.team}</td>
-
-        <td>₹${player.price}</td>
-
-      </tr>
-
-      `;
-
-  });
-
-}
-
-/* LEADERBOARD */
-
-function updateLeaderboard(){
-
-  const content =
-  document.getElementById(
-    "leaderboardContent"
-  );
-
-  content.innerHTML = "";
-
-  for(let team in leaderboard){
-
-    content.innerHTML += `
-
-    <div class="team-card">
-
-      <div>
-
-        <h3>${team}</h3>
-
-        <p>
-          Players Bought:
-          ${leaderboard[team].players.length}
-        </p>
-
-      </div>
-
-      <div class="team-stats">
-
-        <p>
-          Total Spent:
-          ₹${leaderboard[team].spent}
-        </p>
-
-      </div>
-
-    </div>
-
-    `;
-
-  }
 
 }
 
@@ -779,166 +639,24 @@ function exportPDF(){
   const doc =
   new jsPDF();
 
-  const soldPlayers =
-
-  JSON.parse(
-    localStorage.getItem(
-      "soldPlayers"
-    )
-  ) || [];
-
-  doc.setFontSize(24);
-
   doc.text(
-    "🏏 AUCTION PRO RESULTS",
-    45,
+    "Auction Results",
+    20,
     20
   );
 
-  doc.setFontSize(12);
-
-  doc.text(
-
-    `Generated:
-     ${new Date().toLocaleString()}`,
-
-    10,
-    35
-
-  );
-
-  let y = 50;
-
-  doc.setFontSize(18);
-
-  doc.text(
-    "SOLD PLAYERS",
-    10,
-    y
-  );
-
-  y += 15;
-
-  doc.setFontSize(14);
-
-  doc.text(
-    "PLAYER",
-    10,
-    y
-  );
-
-  doc.text(
-    "TEAM",
-    90,
-    y
-  );
-
-  doc.text(
-    "PRICE",
-    160,
-    y
-  );
-
-  y += 5;
-
-  doc.line(
-    10,
-    y,
-    200,
-    y
-  );
-
-  y += 10;
-
-  soldPlayers.forEach(player => {
-
-    doc.setFontSize(12);
-
-    doc.text(
-      player.player,
-      10,
-      y
-    );
-
-    doc.text(
-      player.team,
-      90,
-      y
-    );
-
-    doc.text(
-      `₹${player.price}`,
-      160,
-      y
-    );
-
-    y += 12;
-
-  });
-
-  y += 20;
-
-  doc.setFontSize(20);
-
-  doc.text(
-    "TEAM PURCHASES",
-    10,
-    y
-  );
-
-  y += 20;
-
-  const teamWise = {};
-
-  soldPlayers.forEach(player => {
-
-    if(!teamWise[player.team]){
-
-      teamWise[player.team] = [];
-
-    }
-
-    teamWise[player.team].push(player);
-
-  });
-
-  for(let team in teamWise){
-
-    doc.setFontSize(16);
-
-    doc.text(
-      `Team:
-       ${team}`,
-      10,
-      y
-    );
-
-    y += 10;
-
-    doc.setFontSize(12);
-
-    teamWise[team].forEach(player => {
-
-      doc.text(
-
-        `${player.player}
-         - ₹${player.price}`,
-
-        20,
-        y
-
-      );
-
-      y += 10;
-
-    });
-
-    y += 10;
-
-  }
-
   doc.save(
     "Auction_Results.pdf"
+  );
+
+}
+
+/* TV MODE */
+
+function toggleTVMode(){
+
+  document.body.classList.toggle(
+    "tv-active"
   );
 
 }
@@ -953,31 +671,6 @@ function toggleAuctioneerMode(){
 
 }
 
-/* TV MODE */
-
-function toggleTVMode(){
-
-  document.body.classList.toggle(
-    "tv-active"
-  );
-
-  if(
-    !document.fullscreenElement
-  ){
-
-    document.documentElement
-    .requestFullscreen();
-
-  }else{
-
-    document.exitFullscreen();
-
-  }
-
-}
-
 /* INITIAL */
 
 fetchPlayers();
-
-updateSoldTable();

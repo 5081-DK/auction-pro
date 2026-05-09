@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express =
 require("express");
 
@@ -26,7 +28,7 @@ express();
 const server =
 http.createServer(app);
 
-/* SOCKET */
+/* SOCKET.IO */
 
 const io =
 new Server(server,{
@@ -67,7 +69,9 @@ app.use(
 /* DATABASE */
 
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/auctionpro"
+
+  process.env.MONGO_URI
+
 )
 
 .then(()=>{
@@ -101,7 +105,7 @@ io.on(
       "User Connected"
     );
 
-    /* PLACE BID */
+    /* BID UPDATE */
 
     socket.on(
       "placeBid",
@@ -180,14 +184,14 @@ app.get(
 
 server.listen(
 
-  5000,
+  process.env.PORT || 5000,
 
   "0.0.0.0",
 
   () => {
 
     console.log(
-      "Server Running On Port 5000"
+      "Server Running"
     );
 
   }

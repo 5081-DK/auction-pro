@@ -1,3 +1,6 @@
+const API =
+"https://auction-pro-api.onrender.com";
+
 /* TOURNAMENT ID */
 
 let tournamentId = "";
@@ -49,9 +52,11 @@ async function createTournament(){
   ).value;
 
   if(
+
     name === "" ||
     tournamentIdInput === "" ||
     password === ""
+
   ){
 
     alert(
@@ -64,16 +69,18 @@ async function createTournament(){
 
   try{
 
-    const res = await fetch(
+    const res =
+    await fetch(
 
-      "http://localhost:5000/createTournament",
+      `${API}/createTournament`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -94,36 +101,52 @@ async function createTournament(){
     const data =
     await res.json();
 
-    tournamentId =
-    data._id;
+    if(data._id){
 
-    localStorage.setItem(
+      tournamentId =
+      data._id;
 
-      "tournamentId",
+      localStorage.setItem(
 
-      tournamentId
+        "tournamentId",
 
-    );
+        tournamentId
 
-    localStorage.removeItem(
-      "soldPlayers"
-    );
+      );
 
-    localStorage.removeItem(
-      "auctionStarted"
-    );
+      localStorage.removeItem(
+        "soldPlayers"
+      );
 
-    alert(
-      "Tournament Created"
-    );
+      localStorage.removeItem(
+        "auctionStarted"
+      );
 
-    showOutput(
-      "🏏 Tournament Created"
-    );
+      alert(
+        "Tournament Created"
+      );
 
-  }catch(err){
+      showOutput(
+        "🏏 Tournament Created"
+      );
+
+    }else{
+
+      alert(
+        "Tournament Creation Failed"
+      );
+
+    }
+
+  }
+
+  catch(err){
 
     console.log(err);
+
+    alert(
+      "Server Error"
+    );
 
   }
 
@@ -174,16 +197,18 @@ async function addTeam(){
 
   try{
 
+    const res =
     await fetch(
 
-      "http://localhost:5000/addTeam",
+      `${API}/addTeam`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -198,18 +223,39 @@ async function addTeam(){
 
     );
 
-    alert(
-      "Team Added"
-    );
+    const data =
+    await res.json();
 
-    showOutput(
-      `✅ Team Added:
-       ${team.name}`
-    );
+    if(data.success){
 
-  }catch(err){
+      alert(
+        "Team Added"
+      );
+
+      showOutput(
+
+        `✅ Team Added:
+         ${team.name}`
+
+      );
+
+    }else{
+
+      alert(
+        "Failed To Add Team"
+      );
+
+    }
+
+  }
+
+  catch(err){
 
     console.log(err);
+
+    alert(
+      "Server Error"
+    );
 
   }
 
@@ -281,16 +327,18 @@ async function addPlayer(){
 
   try{
 
+    const res =
     await fetch(
 
-      "http://localhost:5000/addPlayer",
+      `${API}/addPlayer`,
 
       {
 
         method:"POST",
 
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":
+          "application/json"
         },
 
         body:JSON.stringify({
@@ -305,18 +353,39 @@ async function addPlayer(){
 
     );
 
-    alert(
-      "Player Added"
-    );
+    const data =
+    await res.json();
 
-    showOutput(
-      `🏏 Player Added:
-       ${player.name}`
-    );
+    if(data.success){
 
-  }catch(err){
+      alert(
+        "Player Added"
+      );
+
+      showOutput(
+
+        `🏏 Player Added:
+         ${player.name}`
+
+      );
+
+    }else{
+
+      alert(
+        "Failed To Add Player"
+      );
+
+    }
+
+  }
+
+  catch(err){
 
     console.log(err);
+
+    alert(
+      "Server Error"
+    );
 
   }
 
@@ -346,8 +415,10 @@ function startAuction(){
   );
 
   if(
+
     !savedId ||
     savedId === "undefined"
+
   ){
 
     alert(

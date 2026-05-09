@@ -1,48 +1,112 @@
-const loginModal = document.getElementById("loginModal");
-const signupModal = document.getElementById("signupModal");
+const API =
+"https://auction-pro-api.onrender.com";
+
+/* MODALS */
+
+const loginModal =
+document.getElementById("loginModal");
+
+const signupModal =
+document.getElementById("signupModal");
+
+/* SHOW LOGIN */
 
 function showLogin(){
-  loginModal.style.display = "flex";
+
+  loginModal.style.display =
+  "flex";
+
 }
+
+/* SHOW SIGNUP */
 
 function showSignup(){
-  signupModal.style.display = "flex";
+
+  signupModal.style.display =
+  "flex";
+
 }
 
+/* CLOSE MODAL */
+
 function closeModal(){
-  loginModal.style.display = "none";
-  signupModal.style.display = "none";
+
+  loginModal.style.display =
+  "none";
+
+  signupModal.style.display =
+  "none";
+
 }
 
 /* SIGNUP */
 
 async function signup(){
 
-  const username =
-  document.getElementById("signupUser").value;
+  try{
 
-  const password =
-  document.getElementById("signupPass").value;
+    const username =
+    document.getElementById(
+      "signupUser"
+    ).value;
 
-  const res = await fetch(
-    "http://localhost:5000/signup",
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        username,
-        password
-      })
+    const password =
+    document.getElementById(
+      "signupPass"
+    ).value;
+
+    const res =
+    await fetch(
+
+      `${API}/signup`,
+
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:JSON.stringify({
+          username,
+          password
+        })
+
+      }
+
+    );
+
+    const data =
+    await res.json();
+
+    if(data.success){
+
+      alert(
+        "Signup Successful"
+      );
+
+      closeModal();
+
+    }else{
+
+      alert(
+        data.message ||
+        "Signup Failed"
+      );
+
     }
-  );
 
-  const data = await res.json();
+  }
 
-  if(data.success){
-    alert("Signup Successful");
-    closeModal();
+  catch(err){
+
+    console.log(err);
+
+    alert(
+      "Server Error"
+    );
+
   }
 
 }
@@ -51,39 +115,83 @@ async function signup(){
 
 async function login(){
 
-  const username =
-  document.getElementById("loginUser").value;
+  try{
 
-  const password =
-  document.getElementById("loginPass").value;
+    const username =
+    document.getElementById(
+      "loginUser"
+    ).value;
 
-  const res = await fetch(
-    "http://localhost:5000/login",
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        username,
-        password
-      })
-    }
-  );
+    const password =
+    document.getElementById(
+      "loginPass"
+    ).value;
 
-  const data = await res.json();
+    const res =
+    await fetch(
 
-  if(data.success){
+      `${API}/login`,
 
-    localStorage.setItem(
-      "admin",
-      JSON.stringify(data.user)
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:JSON.stringify({
+          username,
+          password
+        })
+
+      }
+
     );
 
-    window.location.href = "admin.html";
+    const data =
+    await res.json();
 
-  }else{
-    alert("Login Failed");
+    if(data.success){
+
+      localStorage.setItem(
+
+        "admin",
+
+        JSON.stringify(
+          data.user
+        )
+
+      );
+
+      alert(
+        "Login Successful"
+      );
+
+      window.location.href =
+      "admin.html";
+
+    }
+
+    else{
+
+      alert(
+        data.message ||
+        "Login Failed"
+      );
+
+    }
+
+  }
+
+  catch(err){
+
+    console.log(err);
+
+    alert(
+      "Server Error"
+    );
+
   }
 
 }
