@@ -28,14 +28,17 @@ express();
 const server =
 http.createServer(app);
 
-/* SOCKET.IO */
+/* SOCKET */
 
 const io =
 new Server(server,{
 
   cors:{
     origin:"*",
-    methods:["GET","POST"]
+    methods:[
+      "GET",
+      "POST"
+    ]
   }
 
 });
@@ -45,13 +48,16 @@ new Server(server,{
 const tournamentRoutes =
 require("./routes/tournament");
 
+const authRoutes =
+require("./routes/auth");
+
 /* MIDDLEWARE */
 
 app.use(cors());
 
 app.use(express.json());
 
-/* SERVE FRONTEND */
+/* STATIC FRONTEND */
 
 app.use(
 
@@ -95,6 +101,11 @@ app.use(
   tournamentRoutes
 );
 
+app.use(
+  "/",
+  authRoutes
+);
+
 /* SOCKET CONNECTION */
 
 io.on(
@@ -105,7 +116,7 @@ io.on(
       "User Connected"
     );
 
-    /* BID UPDATE */
+    /* LIVE BID */
 
     socket.on(
       "placeBid",
@@ -162,7 +173,7 @@ io.on(
   }
 );
 
-/* FRONTEND ROUTE */
+/* HOME ROUTE */
 
 app.get(
   "/",
@@ -182,16 +193,21 @@ app.get(
 
 /* START SERVER */
 
+const PORT =
+process.env.PORT || 5000;
+
 server.listen(
 
-  process.env.PORT || 5000,
+  PORT,
 
   "0.0.0.0",
 
   () => {
 
     console.log(
-      "Server Running"
+
+      `Server Running On Port ${PORT}`
+
     );
 
   }
