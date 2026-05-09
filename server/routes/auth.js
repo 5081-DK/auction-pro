@@ -12,18 +12,27 @@ require("mongoose");
 const userSchema =
 new mongoose.Schema({
 
-  username:String,
+  username:{
+    type:String,
+    required:true,
+    unique:true
+  },
 
-  password:String
+  password:{
+    type:String,
+    required:true
+  }
 
 });
 
 /* USER MODEL */
 
 const User =
-mongoose.models.User ||
+mongoose.connection
 
-mongoose.model(
+.useDb("auctionpro")
+
+.model(
   "User",
   userSchema
 );
@@ -31,6 +40,7 @@ mongoose.model(
 /* SIGNUP */
 
 router.post(
+
   "/signup",
 
   async(req,res)=>{
@@ -45,11 +55,33 @@ router.post(
 
       } = req.body;
 
-      /* CHECK EXISTING */
+      /* VALIDATION */
+
+      if(
+
+        !username ||
+        !password
+
+      ){
+
+        return res.json({
+
+          success:false,
+
+          message:
+          "All fields required"
+
+        });
+
+      }
+
+      /* CHECK EXISTING USER */
 
       const existingUser =
       await User.findOne({
+
         username
+
       });
 
       if(existingUser){
@@ -111,6 +143,7 @@ router.post(
 /* LOGIN */
 
 router.post(
+
   "/login",
 
   async(req,res)=>{
@@ -124,6 +157,8 @@ router.post(
         password
 
       } = req.body;
+
+      /* FIND USER */
 
       const user =
       await User.findOne({
