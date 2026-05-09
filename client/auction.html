@@ -1,0 +1,309 @@
+<!-- client/auction.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>Auction Pro</title>
+
+  <link rel="stylesheet" href="auction.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <div class="header">
+
+    <h1>🏏 AUCTION PRO</h1>
+
+  </div>
+
+  <!-- AUCTIONEER MODE -->
+
+  <button
+  class="auctioneer-btn"
+  onclick="toggleAuctioneerMode()">
+
+    🎤 AUCTIONEER MODE
+
+  </button>
+
+  <!-- TV MODE -->
+
+  <button
+  class="tv-btn"
+  onclick="toggleTVMode()">
+
+    📺 TV MODE
+
+  </button>
+
+  <!-- TEAM LOGIN -->
+
+  <div class="team-login">
+
+    <h2>Team Login</h2>
+
+    <input
+    type="text"
+    id="loginTeamName"
+    placeholder="Team Name">
+
+    <input
+    type="password"
+    id="loginTeamPassword"
+    placeholder="Team Password">
+
+    <button onclick="teamLogin()">
+
+      LOGIN TEAM
+
+    </button>
+
+    <!-- TEAM DISPLAY -->
+
+    <div class="team-display">
+
+      <img
+      id="teamLogo"
+      src="https://cdn-icons-png.flaticon.com/512/616/616494.png"
+      alt="Team Logo">
+
+      <div>
+
+        <h3 id="loggedTeam">
+
+          No Team Logged In
+
+        </h3>
+
+        <h3 id="teamPurse">
+
+          Purse: ₹0
+
+        </h3>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MAIN CONTAINER -->
+
+  <div class="container">
+
+    <!-- PLAYER CARD -->
+
+    <div class="player-card">
+
+      <img
+      id="playerImage"
+      src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      alt="Player">
+
+      <h2 id="playerName">
+
+        Player Name
+
+      </h2>
+
+      <p id="playerStats">
+
+        Matches: 0 | Runs: 0 | Wickets: 0
+
+      </p>
+
+      <h3 id="basePrice">
+
+        Base Price: ₹0
+
+      </h3>
+
+    </div>
+
+    <!-- BID SECTION -->
+
+    <div class="bid-section">
+
+      <h2>Current Bid</h2>
+
+      <div class="bid-box">
+
+        ₹ <span id="currentBid">0</span>
+
+      </div>
+
+      <h3 id="highestBidder">
+
+        No Bids Yet
+
+      </h3>
+
+      <input
+      type="number"
+      id="bidAmount"
+      placeholder="Enter Bid Amount">
+
+      <button onclick="placeBid()">
+
+        PLACE BID
+
+      </button>
+
+      <button onclick="exportPDF()">
+
+        EXPORT PDF
+
+      </button>
+
+      <!-- ADMIN CONTROLS -->
+
+      <div class="admin-controls">
+
+        <button onclick="enableAdmin()">
+
+          ADMIN LOGIN
+
+        </button>
+
+        <button onclick="sellPlayer()">
+
+          SELL PLAYER
+
+        </button>
+
+        <button onclick="nextPlayer()">
+
+          NEXT PLAYER
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SOLD PLAYERS -->
+
+  <div class="table-section">
+
+    <h2>🏆 Sold Players</h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Player</th>
+
+          <th>Team</th>
+
+          <th>Price</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="soldTableBody">
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- LEADERBOARD -->
+
+  <div class="leaderboard">
+
+    <h2>📊 Live Purse Leaderboard</h2>
+
+    <div id="leaderboardContent">
+
+    </div>
+
+  </div>
+
+  <!-- TV DISPLAY -->
+
+  <div class="tv-display" id="tvDisplay">
+
+    <div class="stadium-overlay">
+
+      <h1 class="tv-title">
+
+        🏏 AUCTION PRO LIVE
+
+      </h1>
+
+      <div class="tv-player">
+
+        <img
+        id="tvPlayerImage"
+        src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+        <div>
+
+          <h1 id="tvPlayerName">
+
+            Player Name
+
+          </h1>
+
+          <h2 id="tvPlayerStats">
+
+            Stats
+
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div class="tv-bid-box">
+
+        ₹ <span id="tvCurrentBid">
+
+          0
+
+        </span>
+
+      </div>
+
+      <h1 id="tvHighestBidder">
+
+        No Bids Yet
+
+      </h1>
+
+    </div>
+
+  </div>
+
+  <!-- SOCKET -->
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+  <!-- JSPDF -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- JS -->
+
+  <script src="auction.js"></script>
+
+</body>
+</html>

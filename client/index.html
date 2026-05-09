@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Pro</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="overlay"></div>
+
+  <nav>
+    <h1>🏏 AUCTION PRO</h1>
+
+    <div class="nav-buttons">
+      <button onclick="showLogin()">Login</button>
+      <button onclick="showSignup()">Sign Up</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <h2>Ultimate Cricket Auction Platform</h2>
+
+      <p>
+        Create tournaments, manage teams,
+        and conduct live IPL-style auctions.
+      </p>
+
+      <button class="start-btn">
+        START AUCTION
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="loginModal">
+
+    <div class="modal-box">
+
+      <h2>Admin Login</h2>
+
+      <input type="text" id="loginUser" placeholder="Username">
+
+      <input type="password" id="loginPass" placeholder="Password">
+
+      <button onclick="login()">Login</button>
+
+      <span onclick="closeModal()">Close</span>
+
+    </div>
+
+  </div>
+
+  <!-- SIGNUP MODAL -->
+  <div class="modal" id="signupModal">
+
+    <div class="modal-box">
+
+      <h2>Create Account</h2>
+
+      <input type="text" id="signupUser" placeholder="Username">
+
+      <input type="password" id="signupPass" placeholder="Password">
+
+      <button onclick="signup()">Sign Up</button>
+
+      <span onclick="closeModal()">Close</span>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

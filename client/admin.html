@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>Auction Pro Admin</title>
+
+  <link rel="stylesheet" href="admin.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🏏 AUCTION PRO ADMIN</h1>
+
+    <!-- CREATE TOURNAMENT -->
+
+    <div class="card">
+
+      <h2>Create Tournament</h2>
+
+      <input
+      type="text"
+      id="tname"
+      placeholder="Tournament Name">
+
+      <input
+      type="text"
+      id="tid"
+      placeholder="Tournament ID">
+
+      <input
+      type="password"
+      id="tpass"
+      placeholder="Tournament Password">
+
+      <button onclick="createTournament()">
+
+        CREATE TOURNAMENT
+
+      </button>
+
+    </div>
+
+    <!-- ADD TEAM -->
+
+    <div class="card">
+
+      <h2>Add Team</h2>
+
+      <input
+      type="text"
+      id="teamName"
+      placeholder="Team Name">
+
+      <input
+      type="password"
+      id="teamPass"
+      placeholder="Team Password">
+
+      <input
+      type="number"
+      id="teamPurse"
+      placeholder="Team Purse">
+
+      <input
+      type="text"
+      id="teamLogo"
+      placeholder="Team Logo Image URL">
+
+      <button onclick="addTeam()">
+
+        ADD TEAM
+
+      </button>
+
+    </div>
+
+    <!-- ADD PLAYER -->
+
+    <div class="card">
+
+      <h2>Add Player</h2>
+
+      <input
+      type="text"
+      id="playerName"
+      placeholder="Player Name">
+
+      <input
+      type="text"
+      id="playerPhoto"
+      placeholder="Player Photo URL">
+
+      <input
+      type="number"
+      id="matches"
+      placeholder="Matches Played">
+
+      <input
+      type="number"
+      id="runs"
+      placeholder="Runs">
+
+      <input
+      type="number"
+      id="wickets"
+      placeholder="Wickets">
+
+      <input
+      type="number"
+      id="basePrice"
+      placeholder="Base Price">
+
+      <button onclick="addPlayer()">
+
+        ADD PLAYER
+
+      </button>
+
+    </div>
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="card">
+
+      <button onclick="startAuction()">
+
+        START AUCTION
+
+      </button>
+
+      <button onclick="logout()">
+
+        LOGOUT
+
+      </button>
+
+    </div>
+
+    <!-- OUTPUT -->
+
+    <div
+    class="card"
+    id="output">
+
+    </div>
+
+  </div>
+
+  <script src="admin.js"></script>
+
+</body>
+</html>
