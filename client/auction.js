@@ -631,7 +631,7 @@ function nextPlayer(){
 
 /* EXPORT PDF */
 
-function exportPDF(){
+async function exportPDF(){
 
   const { jsPDF } =
   window.jspdf;
@@ -639,11 +639,153 @@ function exportPDF(){
   const doc =
   new jsPDF();
 
-  doc.text(
-    "Auction Results",
-    20,
-    20
+  /* FETCH TOURNAMENT */
+
+  const res =
+  await fetch(
+
+    `${API}/getTournament/${tournamentId}`
+
   );
+
+  const tournament =
+  await res.json();
+
+  const teams =
+  tournament.teams || [];
+
+  let y = 20;
+
+  /* TITLE */
+
+  doc.setFontSize(22);
+
+  doc.text(
+    "AUCTION RESULTS",
+    65,
+    y
+  );
+
+  y += 20;
+
+  /* SOLD PLAYERS */
+
+  doc.setFontSize(18);
+
+  doc.text(
+    "Sold Players",
+    15,
+    y
+  );
+
+  y += 10;
+
+  doc.setFontSize(12);
+
+  teams.forEach(team => {
+
+    (team.players || []).forEach(player => {
+
+      doc.text(
+
+        `${player.name} → ${team.name} → ₹${player.soldPrice}`,
+
+        15,
+
+        y
+
+      );
+
+      y += 8;
+
+      if(y > 270){
+
+        doc.addPage();
+
+        y = 20;
+
+      }
+
+    });
+
+  });
+
+  y += 10;
+
+  /* TEAM SECTION */
+
+  doc.setFontSize(18);
+
+  doc.text(
+    "Team Wise Players",
+    15,
+    y
+  );
+
+  y += 12;
+
+  teams.forEach(team => {
+
+    doc.setFontSize(15);
+
+    doc.text(
+      team.name,
+      15,
+      y
+    );
+
+    y += 8;
+
+    doc.setFontSize(12);
+
+    if(
+      !team.players ||
+      team.players.length === 0
+    ){
+
+      doc.text(
+        "No Players Bought",
+        20,
+        y
+      );
+
+      y += 8;
+
+    }
+
+    else{
+
+      team.players.forEach(player => {
+
+        doc.text(
+
+          `• ${player.name} - ₹${player.soldPrice}`,
+
+          20,
+
+          y
+
+        );
+
+        y += 8;
+
+        if(y > 270){
+
+          doc.addPage();
+
+          y = 20;
+
+        }
+
+      });
+
+    }
+
+    y += 10;
+
+  });
+
+  /* SAVE */
 
   doc.save(
     "Auction_Results.pdf"

@@ -402,4 +402,42 @@ router.post(
 
 });
 
+/* GET TOURNAMENT */
+
+router.get(
+
+  "/getTournament/:id",
+
+  async(req,res)=>{
+
+    try{
+
+      const tournament =
+
+      await Tournament.findById(
+        req.params.id
+      );
+
+      res.json(
+        tournament
+      );
+
+    }
+
+    catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success:false
+
+      });
+
+    }
+
+  }
+
+);
+
 module.exports = router;
