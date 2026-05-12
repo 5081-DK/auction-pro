@@ -38,7 +38,9 @@ router.post(
 
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -83,7 +85,9 @@ router.post(
         success:true
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -126,7 +130,9 @@ router.post(
         success:true
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -147,9 +153,12 @@ router.get(
     try{
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         req.params.id
-      );
+
+      });
 
       if(!tournament){
 
@@ -161,7 +170,9 @@ router.get(
         tournament.players
       );
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -192,9 +203,12 @@ router.post(
       } = req.body;
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         tournamentId
-      );
+
+      });
 
       if(!tournament){
 
@@ -223,14 +237,12 @@ router.post(
 
       }
 
-      /* SUCCESS RESPONSE */
-
       res.json({
 
         success:true,
 
         tournamentId:
-        tournament._id,
+        tournament.tournamentId,
 
         team
 
@@ -271,9 +283,12 @@ router.post(
       } = req.body;
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         tournamentId
-      );
+
+      });
 
       if(!tournament){
 
@@ -313,6 +328,12 @@ router.post(
 
       if(team){
 
+        if(!team.players){
+
+          team.players = [];
+
+        }
+
         team.players.push({
 
           name:playerName,
@@ -333,7 +354,9 @@ router.post(
         success:true
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -362,9 +385,12 @@ router.post(
       } = req.body;
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         tournamentId
-      );
+
+      });
 
       if(!tournament){
 
@@ -397,7 +423,9 @@ router.post(
 
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 
@@ -421,9 +449,12 @@ router.get(
 
       const tournament =
 
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         req.params.id
-      );
+
+      });
 
       res.json(
         tournament
