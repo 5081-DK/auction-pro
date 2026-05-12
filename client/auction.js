@@ -3,7 +3,7 @@
 const API =
 "https://auction-pro-api.onrender.com";
 
-/* SOCKET CONNECTION */
+/* SOCKET */
 
 const socket =
 io(API);
@@ -14,25 +14,6 @@ let tournamentId =
 localStorage.getItem(
   "tournamentId"
 ) || "";
-
-/* CLEAR OLD DATA */
-
-if(
-  !localStorage.getItem(
-    "auctionStarted"
-  )
-){
-
-  localStorage.removeItem(
-    "soldPlayers"
-  );
-
-  localStorage.setItem(
-    "auctionStarted",
-    "true"
-  );
-
-}
 
 /* VARIABLES */
 
@@ -49,8 +30,6 @@ let loggedInTeam = "";
 let loggedInPurse = 0;
 
 let isAdmin = false;
-
-let leaderboard = {};
 
 /* FETCH PLAYERS */
 
@@ -70,10 +49,6 @@ async function fetchPlayers(){
 
     if(players.length === 0){
 
-      alert(
-        "No Players Found"
-      );
-
       return;
 
     }
@@ -85,10 +60,6 @@ async function fetchPlayers(){
   catch(err){
 
     console.log(err);
-
-    alert(
-      "Server Error"
-    );
 
   }
 
@@ -154,11 +125,7 @@ function loadPlayer(){
   ).innerText =
   "No Bids Yet";
 
-  document.getElementById(
-    "bidAmount"
-  ).value = "";
-
-  /* TV DISPLAY */
+  /* TV MODE */
 
   if(
     document.getElementById(
@@ -183,25 +150,6 @@ function loadPlayer(){
       "tvPlayerName"
     ).innerText =
     player.name;
-
-  }
-
-  if(
-    document.getElementById(
-      "tvPlayerStats"
-    )
-  ){
-
-    document.getElementById(
-      "tvPlayerStats"
-    ).innerText =
-
-    `Matches:
-     ${player.matches}
-     | Runs:
-     ${player.runs}
-     | Wickets:
-     ${player.wickets}`;
 
   }
 
@@ -235,8 +183,6 @@ function enableAdmin(){
   }
 
 }
-
-
 
 /* TEAM LOGIN */
 
@@ -307,8 +253,6 @@ async function teamLogin(){
 
     if(data.success){
 
-      /* SAVE TOURNAMENT ID */
-
       tournamentId =
       data.tournamentId;
 
@@ -320,15 +264,11 @@ async function teamLogin(){
 
       );
 
-      /* TEAM INFO */
-
       loggedInTeam =
       data.team.name;
 
       loggedInPurse =
       data.team.purse;
-
-      /* UI UPDATE */
 
       document.getElementById(
         "loggedTeam"
@@ -352,9 +292,11 @@ async function teamLogin(){
 
       "https://cdn-icons-png.flaticon.com/512/616/616494.png";
 
-      /* LOAD PLAYERS */
-
       await fetchPlayers();
+
+      await fetchLeaderboard();
+
+      await fetchSoldPlayers();
 
       alert(
         "Team Login Success"
@@ -379,6 +321,119 @@ async function teamLogin(){
     alert(
       "Server Error"
     );
+
+  }
+
+}
+
+/* FETCH LEADERBOARD */
+
+async function fetchLeaderboard(){
+
+  try{
+
+    const res =
+    await fetch(
+
+      `${API}/getTournament/${tournamentId}`
+
+    );
+
+    const tournament =
+    await res.json();
+
+    const teams =
+    tournament.teams || [];
+
+    const leaderboardDiv =
+    document.getElementById(
+      "leaderboardContent"
+    );
+
+    leaderboardDiv.innerHTML = "";
+
+    teams.forEach(team => {
+
+      leaderboardDiv.innerHTML += `
+
+        <div class="leaderboard-card">
+
+          <h3>${team.name}</h3>
+
+          <p>
+            Purse:
+            ₹${team.purse}
+          </p>
+
+        </div>
+
+      `;
+
+    });
+
+  }
+
+  catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* FETCH SOLD PLAYERS */
+
+async function fetchSoldPlayers(){
+
+  try{
+
+    const res =
+    await fetch(
+
+      `${API}/getTournament/${tournamentId}`
+
+    );
+
+    const tournament =
+    await res.json();
+
+    const teams =
+    tournament.teams || [];
+
+    const table =
+    document.getElementById(
+      "soldTableBody"
+    );
+
+    table.innerHTML = "";
+
+    teams.forEach(team => {
+
+      (team.players || []).forEach(player => {
+
+        table.innerHTML += `
+
+          <tr>
+
+            <td>${player.name}</td>
+
+            <td>${team.name}</td>
+
+            <td>₹${player.soldPrice}</td>
+
+          </tr>
+
+        `;
+
+      });
+
+    });
+
+  }
+
+  catch(err){
+
+    console.log(err);
 
   }
 
@@ -527,10 +582,12 @@ socket.on(
     `Highest Bidder:
      ${highestBidder}`;
 
+    fetchLeaderboard();
+
   }
 );
 
-/* PLAYER CHANGED */
+/* NEXT PLAYER SOCKET */
 
 socket.on(
   "playerChanged",
@@ -544,7 +601,7 @@ socket.on(
   }
 );
 
-/* RESET BID */
+/* RESET BID SOCKET */
 
 socket.on(
   "bidReset",
@@ -635,6 +692,12 @@ async function sellPlayer(){
 
     );
 
+    await fetchLeaderboard();
+
+    await fetchSoldPlayers();
+
+    await fetchLatestPurse();
+
     socket.emit(
       "resetBid"
     );
@@ -682,8 +745,6 @@ async function exportPDF(){
   const doc =
   new jsPDF();
 
-  /* FETCH TOURNAMENT */
-
   const res =
   await fetch(
 
@@ -699,8 +760,6 @@ async function exportPDF(){
 
   let y = 20;
 
-  /* TITLE */
-
   doc.setFontSize(22);
 
   doc.text(
@@ -710,20 +769,6 @@ async function exportPDF(){
   );
 
   y += 20;
-
-  /* SOLD PLAYERS */
-
-  doc.setFontSize(18);
-
-  doc.text(
-    "Sold Players",
-    15,
-    y
-  );
-
-  y += 10;
-
-  doc.setFontSize(12);
 
   teams.forEach(team => {
 
@@ -739,96 +784,11 @@ async function exportPDF(){
 
       );
 
-      y += 8;
-
-      if(y > 270){
-
-        doc.addPage();
-
-        y = 20;
-
-      }
+      y += 10;
 
     });
 
   });
-
-  y += 10;
-
-  /* TEAM SECTION */
-
-  doc.setFontSize(18);
-
-  doc.text(
-    "Team Wise Players",
-    15,
-    y
-  );
-
-  y += 12;
-
-  teams.forEach(team => {
-
-    doc.setFontSize(15);
-
-    doc.text(
-      team.name,
-      15,
-      y
-    );
-
-    y += 8;
-
-    doc.setFontSize(12);
-
-    if(
-      !team.players ||
-      team.players.length === 0
-    ){
-
-      doc.text(
-        "No Players Bought",
-        20,
-        y
-      );
-
-      y += 8;
-
-    }
-
-    else{
-
-      team.players.forEach(player => {
-
-        doc.text(
-
-          `• ${player.name} - ₹${player.soldPrice}`,
-
-          20,
-
-          y
-
-        );
-
-        y += 8;
-
-        if(y > 270){
-
-          doc.addPage();
-
-          y = 20;
-
-        }
-
-      });
-
-    }
-
-    y += 10;
-
-  });
-
-  /* SAVE */
 
   doc.save(
     "Auction_Results.pdf"
@@ -861,5 +821,9 @@ function toggleAuctioneerMode(){
 if(tournamentId !== ""){
 
   fetchPlayers();
+
+  fetchLeaderboard();
+
+  fetchSoldPlayers();
 
 }
