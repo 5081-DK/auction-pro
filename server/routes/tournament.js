@@ -223,15 +223,22 @@ router.post(
 
       }
 
+      /* SUCCESS RESPONSE */
+
       res.json({
 
         success:true,
+
+        tournamentId:
+        tournament._id,
 
         team
 
       });
 
-    }catch(err){
+    }
+
+    catch(err){
 
       console.log(err);
 

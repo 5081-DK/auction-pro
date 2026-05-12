@@ -10,10 +10,10 @@ io(API);
 
 /* TOURNAMENT ID */
 
-const tournamentId =
+let tournamentId =
 localStorage.getItem(
   "tournamentId"
-);
+) || "";
 
 /* CLEAR OLD DATA */
 
@@ -236,9 +236,16 @@ function enableAdmin(){
 
 }
 
+
+
 /* TEAM LOGIN */
 
 async function teamLogin(){
+
+  const enteredTournamentId =
+  document.getElementById(
+    "loginTournamentId"
+  ).value;
 
   const teamName =
   document.getElementById(
@@ -249,6 +256,20 @@ async function teamLogin(){
   document.getElementById(
     "loginTeamPassword"
   ).value;
+
+  if(
+    enteredTournamentId === "" ||
+    teamName === "" ||
+    password === ""
+  ){
+
+    alert(
+      "Fill all fields"
+    );
+
+    return;
+
+  }
 
   try{
 
@@ -268,7 +289,8 @@ async function teamLogin(){
 
         body:JSON.stringify({
 
-          tournamentId,
+          tournamentId:
+          enteredTournamentId,
 
           teamName,
 
@@ -285,11 +307,28 @@ async function teamLogin(){
 
     if(data.success){
 
+      /* SAVE TOURNAMENT ID */
+
+      tournamentId =
+      data.tournamentId;
+
+      localStorage.setItem(
+
+        "tournamentId",
+
+        tournamentId
+
+      );
+
+      /* TEAM INFO */
+
       loggedInTeam =
       data.team.name;
 
       loggedInPurse =
       data.team.purse;
+
+      /* UI UPDATE */
 
       document.getElementById(
         "loggedTeam"
@@ -312,6 +351,10 @@ async function teamLogin(){
       data.team.logo ||
 
       "https://cdn-icons-png.flaticon.com/512/616/616494.png";
+
+      /* LOAD PLAYERS */
+
+      await fetchPlayers();
 
       alert(
         "Team Login Success"
@@ -815,4 +858,8 @@ function toggleAuctioneerMode(){
 
 /* INITIAL */
 
-fetchPlayers();
+if(tournamentId !== ""){
+
+  fetchPlayers();
+
+}
