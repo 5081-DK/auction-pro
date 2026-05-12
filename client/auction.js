@@ -745,6 +745,8 @@ async function exportPDF(){
   const doc =
   new jsPDF();
 
+  /* FETCH TOURNAMENT */
+
   const res =
   await fetch(
 
@@ -758,40 +760,419 @@ async function exportPDF(){
   const teams =
   tournament.teams || [];
 
-  let y = 20;
+  const tournamentName =
+  tournament.name || "AUCTION PRO";
 
-  doc.setFontSize(22);
+  /* COVER PAGE */
 
-  doc.text(
-    "AUCTION RESULTS",
-    65,
-    y
+  doc.setFillColor(
+    5,
+    15,
+    45
   );
 
-  y += 20;
+  doc.rect(
+    0,
+    0,
+    210,
+    297,
+    "F"
+  );
+
+  doc.setTextColor(
+    0,
+    255,
+    200
+  );
+
+  doc.setFontSize(30);
+
+  doc.text(
+    tournamentName,
+    40,
+    50
+  );
+
+  doc.setTextColor(
+    255,
+    255,
+    255
+  );
+
+  doc.setFontSize(24);
+
+  doc.text(
+    "🏏 AUCTION RESULTS",
+    45,
+    90
+  );
+
+  doc.setFontSize(16);
+
+  doc.text(
+    `Generated:
+     ${new Date().toLocaleString()}`,
+    45,
+    120
+  );
+
+  doc.setDrawColor(
+    0,
+    255,
+    200
+  );
+
+  doc.line(
+    30,
+    140,
+    180,
+    140
+  );
+
+  /* SOLD PLAYERS PAGE */
+
+  doc.addPage();
+
+  doc.setFillColor(
+    25,
+    25,
+    112
+  );
+
+  doc.rect(
+    0,
+    0,
+    210,
+    297,
+    "F"
+  );
+
+  doc.setTextColor(
+    255,
+    215,
+    0
+  );
+
+  doc.setFontSize(24);
+
+  doc.text(
+    "💰 SOLD PLAYERS LIST",
+    40,
+    25
+  );
+
+  let y = 45;
 
   teams.forEach(team => {
 
     (team.players || []).forEach(player => {
 
-      doc.text(
+      /* PLAYER CARD */
 
-        `${player.name} → ${team.name} → ₹${player.soldPrice}`,
-
-        15,
-
-        y
-
+      doc.setFillColor(
+        35,
+        35,
+        120
       );
 
-      y += 10;
+      doc.roundedRect(
+        15,
+        y - 8,
+        180,
+        15,
+        3,
+        3,
+        "F"
+      );
+
+      doc.setTextColor(
+        255,
+        255,
+        255
+      );
+
+      doc.setFontSize(13);
+
+      doc.text(
+        `${player.name}`,
+        20,
+        y
+      );
+
+      doc.setTextColor(
+        0,
+        255,
+        200
+      );
+
+      doc.text(
+        `${team.name}`,
+        90,
+        y
+      );
+
+      doc.setTextColor(
+        255,
+        215,
+        0
+      );
+
+      doc.text(
+        `₹${player.soldPrice}`,
+        155,
+        y
+      );
+
+      y += 20;
+
+      if(y > 260){
+
+        doc.addPage();
+
+        doc.setFillColor(
+          25,
+          25,
+          112
+        );
+
+        doc.rect(
+          0,
+          0,
+          210,
+          297,
+          "F"
+        );
+
+        y = 30;
+
+      }
 
     });
 
   });
 
+  /* TEAM WISE SECTION */
+
+  teams.forEach(team => {
+
+    doc.addPage();
+
+    doc.setFillColor(
+      10,
+      10,
+      60
+    );
+
+    doc.rect(
+      0,
+      0,
+      210,
+      297,
+      "F"
+    );
+
+    /* TEAM HEADING */
+
+    doc.setTextColor(
+      0,
+      255,
+      200
+    );
+
+    doc.setFontSize(26);
+
+    doc.text(
+      `🏏 ${team.name}`,
+      20,
+      25
+    );
+
+    /* PURSE */
+
+    doc.setTextColor(
+      255,
+      255,
+      255
+    );
+
+    doc.setFontSize(16);
+
+    doc.text(
+      `Remaining Purse:
+       ₹${team.purse}`,
+      20,
+      45
+    );
+
+    /* PLAYERS TITLE */
+
+    doc.setTextColor(
+      255,
+      215,
+      0
+    );
+
+    doc.setFontSize(18);
+
+    doc.text(
+      "Players Bought",
+      20,
+      70
+    );
+
+    let teamY = 90;
+
+    if(
+      !team.players ||
+      team.players.length === 0
+    ){
+
+      doc.setTextColor(
+        255,
+        100,
+        100
+      );
+
+      doc.text(
+        "No Players Bought",
+        20,
+        teamY
+      );
+
+    }
+
+    else{
+
+      team.players.forEach(player => {
+
+        doc.setFillColor(
+          30,
+          30,
+          90
+        );
+
+        doc.roundedRect(
+          15,
+          teamY - 8,
+          180,
+          15,
+          3,
+          3,
+          "F"
+        );
+
+        doc.setTextColor(
+          255,
+          255,
+          255
+        );
+
+        doc.setFontSize(13);
+
+        doc.text(
+          `${player.name}`,
+          20,
+          teamY
+        );
+
+        doc.setTextColor(
+          255,
+          215,
+          0
+        );
+
+        doc.text(
+          `₹${player.soldPrice}`,
+          150,
+          teamY
+        );
+
+        teamY += 20;
+
+        if(teamY > 260){
+
+          doc.addPage();
+
+          doc.setFillColor(
+            10,
+            10,
+            60
+          );
+
+          doc.rect(
+            0,
+            0,
+            210,
+            297,
+            "F"
+          );
+
+          teamY = 30;
+
+        }
+
+      });
+
+    }
+
+  });
+
+  /* FINAL PAGE */
+
+  doc.addPage();
+
+  doc.setFillColor(
+    0,
+    0,
+    0
+  );
+
+  doc.rect(
+    0,
+    0,
+    210,
+    297,
+    "F"
+  );
+
+  doc.setTextColor(
+    0,
+    255,
+    200
+  );
+
+  doc.setFontSize(32);
+
+  doc.text(
+    "THANK YOU",
+    60,
+    120
+  );
+
+  doc.setTextColor(
+    255,
+    255,
+    255
+  );
+
+  doc.setFontSize(18);
+
+  doc.text(
+    tournamentName,
+    55,
+    150
+  );
+
+  doc.text(
+    "Auction Pro - IPL Style Auction System",
+    18,
+    180
+  );
+
+  /* SAVE PDF */
+
   doc.save(
-    "Auction_Results.pdf"
+    `${tournamentName}_Auction_Results.pdf`
   );
 
 }
