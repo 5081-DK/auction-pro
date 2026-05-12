@@ -27,15 +27,10 @@ router.post(
 
       });
 
-      const savedTournament =
       await tournament.save();
 
       res.json({
-
-        success:true,
-
-        _id:savedTournament._id
-
+        success:true
       });
 
     }
@@ -45,9 +40,7 @@ router.post(
       console.log(err);
 
       res.status(500).json({
-
         success:false
-
       });
 
     }
@@ -63,9 +56,12 @@ router.post(
     try{
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         req.body.id
-      );
+
+      });
 
       if(!tournament){
 
@@ -108,9 +104,12 @@ router.post(
     try{
 
       const tournament =
-      await Tournament.findById(
+      await Tournament.findOne({
+
+        tournamentId:
         req.body.id
-      );
+
+      });
 
       if(!tournament){
 
@@ -298,8 +297,6 @@ router.post(
 
       }
 
-      /* FIND PLAYER */
-
       const player =
       tournament.players.find(
 
@@ -316,8 +313,6 @@ router.post(
         player.soldPrice = soldPrice;
 
       }
-
-      /* FIND TEAM */
 
       const team =
       tournament.teams.find(
@@ -341,8 +336,6 @@ router.post(
           soldPrice
 
         });
-
-        /* DEDUCT PURSE */
 
         team.purse -= soldPrice;
 
@@ -440,15 +433,12 @@ router.post(
 /* GET TOURNAMENT */
 
 router.get(
-
   "/getTournament/:id",
-
   async(req,res)=>{
 
     try{
 
       const tournament =
-
       await Tournament.findOne({
 
         tournamentId:
@@ -467,15 +457,11 @@ router.get(
       console.log(err);
 
       res.status(500).json({
-
         success:false
-
       });
 
     }
 
-  }
-
-);
+});
 
 module.exports = router;
